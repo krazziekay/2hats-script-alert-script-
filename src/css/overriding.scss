@@ -1,0 +1,15 @@
+$primary: #6100ee;
+
+.MuiToolbar-root {
+  flex-direction: column !important;
+}
+
+.MuiAppBar-colorPrimary {
+  color: unset !important;
+  background-color: $primary !important;
+}
+
+.MuiInput-underline:before, .MuiInput-underline:after {
+  border-color: #ffffff !important;
+}
+
