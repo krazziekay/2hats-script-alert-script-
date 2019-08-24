@@ -22,7 +22,11 @@ const useStyles = makeStyles(theme => ({
   },
   divider: {
     width: '90%',
-    margin: '0 auto'
+    margin: '0 auto',
+    display: 'none',
+    [theme.breakpoints.down('xs')]: {
+      display: 'block'
+    }
   },
   rightNav: {
     width: '70%',
