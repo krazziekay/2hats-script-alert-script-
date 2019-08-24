@@ -4,12 +4,13 @@ $primary: #6100ee;
   flex-direction: column !important;
 }
 
-.MuiAppBar-colorPrimary {
-  color: unset !important;
-  background-color: $primary !important;
-}
+.modalBody {
+  .MuiInputBase-input {
+    background-color: #e8e8e8 !important;
+    padding: 8px !important;
+  }
 
-.MuiInput-underline:before, .MuiInput-underline:after {
-  border-color: #ffffff !important;
+  .MuiSelect-select {
+    padding: 12px !important;
+  }
 }
-

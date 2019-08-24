@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useState} from 'react';
+import {makeStyles} from '@material-ui/core/styles';
 import DATA from './../constants';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
-import { calculateIntake } from "../utils/helperFunctions";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import {calculateIntake} from "../utils/helperFunctions";
 
 const useStyles = makeStyles(theme => ({
   wrapper: {},
@@ -15,15 +14,18 @@ const useStyles = makeStyles(theme => ({
     borderRadius: '50%',
   },
   profileWrapper: {
-    textAlign: 'center'
+    textAlign: 'center',
+    [theme.breakpoints.down('xs')]: {
+      display: 'none',
+    },
   },
   flexWrapperSpaceAround: {
-    padding: 12,
+    padding: 16,
     display: 'flex',
     justifyContent: 'space-around',
   },
   flexWrapperSpaceBetween: {
-    padding: 12,
+    padding: 16,
     display: 'flex',
     justifyContent: 'space-between',
   },
@@ -35,7 +37,16 @@ const useStyles = makeStyles(theme => ({
     fontSize: 12,
     color: '#afafaf'
   },
+  progress: {
+    padding: '0 16px'
+  }
 }));
+
+const ProgressBar = ({value}) => <div style={{display: 'flex', backgroundColor: '#d2baf3', margin: '8px 0 22px;'}}>
+  <div style={{position: 'relative', height: 4, width: `${value}%`, backgroundColor: '#6000ef'}}>
+    <span style={{position: 'absolute', top: 6, right: 0}}>{value}</span>
+  </div>
+</div>;
 
 
 const Nav = () => {
@@ -56,8 +67,8 @@ const Nav = () => {
         </div>
       </div>
       <Typography variant="h6">{DATA.first_name} {DATA.last_name}</Typography>
+      <Divider/>
     </div>
-    <Divider/>
     <div>
       <div className={classes.flexWrapperSpaceBetween}>
         <div>
@@ -69,8 +80,8 @@ const Nav = () => {
           <p className={classes.mutedText}>consumed</p>
         </div>
       </div>
-      <div>
-        <LinearProgress variant="determinate" value={50}/>
+      <div className={classes.progress}>
+        <ProgressBar value={87}/>
       </div>
     </div>
 

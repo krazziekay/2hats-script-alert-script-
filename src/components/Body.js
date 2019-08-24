@@ -1,8 +1,8 @@
 import React from 'react';
 import Nav from './Nav';
 import Content from './Content';
-import AddBtn from './AddBtn';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
+import Divider from "@material-ui/core/Divider";
 
 const useStyles = makeStyles(theme => ({
   remainingHeight: {
@@ -17,7 +17,12 @@ const useStyles = makeStyles(theme => ({
       height: 'unset',
       width: '100%',
       float: 'unset',
+      backgroundColor: '#fff'
     },
+  },
+  divider: {
+    width: '90%',
+    margin: '0 auto'
   },
   rightNav: {
     width: '70%',
@@ -37,10 +42,10 @@ const Body = () => {
     <div className={classes.leftNav}>
       <Nav/>
     </div>
+    <Divider className={classes.divider}/>
     <div className={classes.rightNav}>
       <Content/>
     </div>
-    <AddBtn/>
   </div>);
 }
 

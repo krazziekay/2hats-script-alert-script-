@@ -1,5 +1,5 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useEffect, useState} from 'react';
+import {makeStyles} from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 
@@ -11,10 +11,12 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const AddBtn = () => {
+const AddBtn = ({clickHandler}) => {
   const classes = useStyles();
+
+
   return (<div>
-    <Fab color="primary" aria-label="add" className={classes.fab}>
+    <Fab color="primary" aria-label="add" className={classes.fab} onClick={clickHandler}>
       <AddIcon/>
     </Fab>
   </div>);
