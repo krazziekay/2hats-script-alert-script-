@@ -47,7 +47,8 @@ const useStyles = makeStyles(theme => ({
   },
   headerText: {
     fontSize: 24,
-    fontWeight: 500
+    fontWeight: 500,
+    color: '#000'
   },
   mutedText: {
     fontSize: 12,
