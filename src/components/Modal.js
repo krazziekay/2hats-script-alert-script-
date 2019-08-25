@@ -50,10 +50,7 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 500,
     color: '#000'
   },
-  mutedText: {
-    fontSize: 12,
-    color: '#afafaf'
-  },
+
   button: {
     margin: 12,
     float: 'right'

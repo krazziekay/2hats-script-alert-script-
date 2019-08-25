@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -19,6 +19,7 @@ import Typography from '@material-ui/core/Typography';
 import AddBtn from './AddBtn';
 import Modal from './Modal';
 import DATA from './../constants';
+import {RoundedDivs} from "../utils/common";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -46,7 +47,7 @@ const useStyles = makeStyles(theme => ({
     display: 'none',
     [theme.breakpoints.down('xs')]: {
       display: 'block',
-      width: '100%'
+      width: '100%',
     },
   },
   flexWrapperSpaceBetween: {
@@ -57,8 +58,8 @@ const useStyles = makeStyles(theme => ({
   flexWrapperSpaceAround: {
     padding: 16,
     display: 'flex',
-    width: '50%',
     justifyContent: 'space-around',
+    alignItems: 'center'
   },
   formInput: {
     display: 'flex',
@@ -91,9 +92,16 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('xs')]: {
       marginTop: 0,
       backgroundColor: '#fff',
-      color: '#000'
-
+      color: '#000',
+      padding: '14px 0 0'
     },
+  },
+  picture: {
+    marginRight: '8%',
+    borderRadius: '50%',
+    height: 64,
+    width: 64,
+    background: '#fff'
   },
   todayIcon: {
     color: '#fff',
@@ -111,6 +119,15 @@ const Header = ({}) => {
   const [selectedFood, setSelectedFood] = useState('');
   const [modal, setModal] = useState(false);
   const [searchList, setSearchList] = useState({display: false, list: []});
+  const searchRef = useRef();
+
+  /**
+   * Set focus on the search text field
+   */
+  const focusSearch = () => {
+    searchRef.current.focus();
+  };
+
 
   /**
    * Function to fetch the data
@@ -184,9 +201,9 @@ const Header = ({}) => {
           </IconButton>
           <InputBase
             fullWidth
-            className={classes.inputWidth}
+            inputRef={searchRef}
             onChange={handleChange}
-            placeholder="Search foods..."
+            placeholder={`Search foods...`}
           />
           {
             searchList.display &&
@@ -212,12 +229,8 @@ const Header = ({}) => {
               <Typography variant="h6">{DATA.first_name}</Typography>
             </div>
             <div className={classes.flexWrapperSpaceAround}>
-              <div className={classes.measurements}>
-                {DATA.weight_kg}
-              </div>
-              <div className={classes.measurements}>
-                {DATA.height_cm}
-              </div>
+              <RoundedDivs data={{'unit': 'kg', 'data': DATA.weight_kg}}/>
+              <RoundedDivs data={{'unit': 'cm', 'data': DATA.height_cm}}/>
             </div>
           </div>
         </div>
@@ -229,7 +242,7 @@ const Header = ({}) => {
         </div>
       </Toolbar>
 
-      <AddBtn clickHandler={handleChange}/>
+      <AddBtn clickHandler={focusSearch}/>
 
     </AppBar>);
 };

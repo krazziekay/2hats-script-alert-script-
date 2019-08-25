@@ -1,8 +1,8 @@
 const DIET = {
   first_name: 'Jane',
   last_name: 'Appleseed',
-  height_cm: 57,
-  weight_kg: 163,
+  height_cm: 163,
+  weight_kg: 57,
   daily_goal: 1500,
   data_points: [
     {

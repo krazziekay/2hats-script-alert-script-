@@ -4,14 +4,15 @@ import DATA from './../constants';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import {calculateIntake} from "../utils/helperFunctions";
+import {RoundedDivs} from "../utils/common";
 
 const useStyles = makeStyles(theme => ({
   wrapper: {},
-  picture: {
-    borderRadius: '50%',
+  divider: {
+    marginTop: 24
   },
-  measurements: {
-    borderRadius: '50%',
+  userName: {
+    fontSize: 16,
   },
   profileWrapper: {
     textAlign: 'center',
@@ -19,10 +20,17 @@ const useStyles = makeStyles(theme => ({
       display: 'none',
     },
   },
+  picture: {
+    borderRadius: '50%',
+    height: 90,
+    width: 90,
+    background: '#fff'
+  },
   flexWrapperSpaceAround: {
     padding: 16,
     display: 'flex',
     justifyContent: 'space-around',
+    alignItems: 'center'
   },
   flexWrapperSpaceBetween: {
     padding: 16,
@@ -37,6 +45,7 @@ const useStyles = makeStyles(theme => ({
     fontSize: 12,
     color: '#afafaf'
   },
+
   progress: {
     padding: '0 16px'
   }
@@ -56,18 +65,14 @@ const Nav = () => {
   return (<div className={classes.wrapper}>
     <div className={classes.profileWrapper}>
       <div className={classes.flexWrapperSpaceAround}>
-        <div className={classes.measurements}>
-          {DATA.weight_kg}
-        </div>
+        <RoundedDivs data={{'unit': 'kg', 'data': DATA.weight_kg}}/>
         <div className={classes.picture}>
           Picture
         </div>
-        <div className={classes.measurements}>
-          {DATA.height_cm}
-        </div>
+        <RoundedDivs data={{'unit': 'cm', 'data': DATA.height_cm}}/>
       </div>
-      <Typography variant="h6">{DATA.first_name} {DATA.last_name}</Typography>
-      <Divider/>
+      <Typography variant="span" className={classes.userName}>{DATA.first_name} {DATA.last_name}</Typography>
+      <Divider className={classes.divider}/>
     </div>
     <div>
       <div className={classes.flexWrapperSpaceBetween}>
