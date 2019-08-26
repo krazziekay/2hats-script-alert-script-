@@ -15,12 +15,11 @@ import Fade from '../utils/Fade';
 import Typography from '@material-ui/core/Typography';
 import AddBtn from './AddBtn';
 import Modal from './Modal';
-import DATA from './../constants';
 import {RoundedDivs, FoodList} from "../utils/common";
 import Request from './../services';
-import Divider from "@material-ui/core/Divider";
-import moment from "moment";
-import {isDateSame} from "../utils/helperFunctions";
+import Divider from '@material-ui/core/Divider';
+import moment from 'moment';
+import {isDateSame, roundOff} from '../utils/helperFunctions';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -118,12 +117,19 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: 12,
     color: '#afafaf'
   },
+  nullPlaceholder: {
+    textAlign: 'center',
+    fontSize: 14,
+    padding: 14,
+    color: '#afafaf'
+  },
 }));
 
 
-const Header = ({changeDate, currentDate}) => {
+const Header = ({userData, refetch, changeDate, currentDate}) => {
   const classes = useStyles();
   const [loader, setLoader] = useState(false);
+  const [searchedFood, setSearchedFood] = useState('');
   const [selectedFood, setSelectedFood] = useState('');
   const [modal, setModal] = useState(false);
   const [searchList, setSearchList] = useState({display: false, list: []});
@@ -140,8 +146,10 @@ const Header = ({changeDate, currentDate}) => {
   /**
    * Function to fetch the data
    */
-  const fetch = () => {
-    console.log("Fetch new data");
+  const fetch = (userData) => {
+    clearFade();
+    setSearchedFood('');
+    refetch(userData);
   };
 
   /**
@@ -151,6 +159,7 @@ const Header = ({changeDate, currentDate}) => {
   const handleChange = (e) => {
     e.persist();
     setLoader(true);
+    setSearchedFood(e.target.value);
     Request(`search/instant?query=${e.target.value}`).then(response => {
       setSearchList(current => {
         let clone = {...current};
@@ -194,7 +203,9 @@ const Header = ({changeDate, currentDate}) => {
    */
   const addFoodItem = (food) => {
     Request('natural/nutrients', 'POST', {query: food.food_name}).then(response => {
-      setSelectedFood(response.data.foods[0]);
+      let foodDetails = response.data.foods[0];
+      foodDetails.unit_calories = roundOff(parseFloat(foodDetails.nf_calories) / parseFloat(foodDetails.serving_qty));
+      setSelectedFood(foodDetails);
       toggleModal(true);
     }).catch(error => {
       console.log('Error', error);
@@ -210,7 +221,8 @@ const Header = ({changeDate, currentDate}) => {
           {
             modal &&
             <>
-              <Modal selectedFood={selectedFood} refetch={fetch} closeModal={toggleModal}/>
+              <Modal userData={userData} currentDate={currentDate} selectedFood={selectedFood} refetch={fetch}
+                     closeModal={toggleModal}/>
             </>
           }
         </>
@@ -224,7 +236,9 @@ const Header = ({changeDate, currentDate}) => {
           </IconButton>
           <InputBase
             fullWidth
+            name="food_search"
             inputRef={searchRef}
+            value={searchedFood}
             onChange={handleChange}
             placeholder={`Search foods...`}
           />
@@ -234,14 +248,22 @@ const Header = ({changeDate, currentDate}) => {
               {loader ? <ListItem><ListItemText primary="Loading"/></ListItem> :
                 <>
                   <span className={classes.mutedText}>COMMON</span>
-                  {searchList.list.common && <FoodList data={searchList.list.common} clickHandler={addFoodItem}/>}
+                  {searchList.list.common.length ?
+                    <FoodList data={searchList.list.common} clickHandler={addFoodItem}/> :
+                    <div className={classes.nullPlaceholder}>
+                      No results found!
+                    </div>}
                   <Divider/>
-                  {searchList.list.branded &&
                   <>
                     <span className={classes.mutedText}>BRANDED</span>
-                    <FoodList data={searchList.list.branded} clickHandler={addFoodItem}/>
+                    {searchList.list.branded.length ?
+
+                      <FoodList data={searchList.list.branded} clickHandler={addFoodItem}/> :
+                      <div className={classes.nullPlaceholder}>
+                        No results found!
+                      </div>
+                    }
                   </>
-                  }
                 </>
               }
             </List>
@@ -252,13 +274,13 @@ const Header = ({changeDate, currentDate}) => {
           <div className={classes.flexWrapperSpaceBetween}>
             <div className={classes.flexWrapperSpaceAround}>
               <div className={classes.picture}>
-                Picture
+                <img src={userData.pp} className={classes.picture} alt=""/>
               </div>
-              <Typography variant="h6">{DATA.first_name}</Typography>
+              <Typography variant="h6">{userData.first_name}</Typography>
             </div>
             <div className={classes.flexWrapperSpaceAround}>
-              <RoundedDivs data={{'unit': 'kg', 'data': DATA.weight_kg}}/>
-              <RoundedDivs data={{'unit': 'cm', 'data': DATA.height_cm}}/>
+              <RoundedDivs data={{'unit': 'kg', 'data': userData.weight_kg}}/>
+              <RoundedDivs data={{'unit': 'cm', 'data': userData.height_cm}}/>
             </div>
           </div>
         </div>

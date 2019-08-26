@@ -12,7 +12,18 @@ const DIET = {
       //today's date
       date: moment().format('YYYY-MM-DD'),
       //empty, let user do the input
-      intake_list: []
+      intake_list: [
+        {
+          "food_name": "orange",
+          "serving_qty": 1,
+          "serving_unit": "fruit (2-7/8\" dia)",
+          "serving_weight_grams": 140,
+          "nf_calories": 68.6,
+          "serving_size": 2,
+          "meal_type": "snack",
+          "thumb": "https://d2xdmhkmkbyw75.cloudfront.net/719_thumb.jpg"
+        }
+      ]
     },
     {
       //yesterday's date
@@ -64,16 +75,6 @@ const DIET = {
           "serving_size": 2,
           "meal_type": "snack",
           "thumb": "https://d2xdmhkmkbyw75.cloudfront.net/8185_thumb.jpg"
-        },
-        {
-          "food_name": "orange",
-          "serving_qty": 1,
-          "serving_unit": "fruit (2-7/8\" dia)",
-          "serving_weight_grams": 140,
-          "nf_calories": 68.6,
-          "serving_size": 2,
-          "meal_type": "snack",
-          "thumb": "https://d2xdmhkmkbyw75.cloudfront.net/719_thumb.jpg"
         }
       ]
     },

@@ -2,10 +2,9 @@ import React, {useEffect, useState} from 'react';
 import Nav from './Nav';
 import Content from './Content';
 import {makeStyles} from '@material-ui/core/styles';
-import Divider from "@material-ui/core/Divider";
-import DATA from "../constants";
+import Divider from '@material-ui/core/Divider';
 import {isDateSame} from "../utils/helperFunctions";
-import moment from "moment";
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
   remainingHeight: {
@@ -43,21 +42,22 @@ const useStyles = makeStyles(theme => ({
     },
   }
 }));
-const Body = ({currentDate}) => {
-  const [data, setData] = useState(DATA.data_points.filter(d => isDateSame(d.date, moment(currentDate)))[0]);
+
+const Body = ({userData, currentDate}) => {
+  const [data, setData] = useState(userData.data_points.filter(d => isDateSame(d.date, moment(currentDate)))[0]);
   const classes = useStyles();
 
   useEffect(() => {
-    setData(DATA.data_points.filter(d => isDateSame(d.date, moment(currentDate)))[0]);
+    setData(userData.data_points.filter(d => isDateSame(d.date, moment(currentDate)))[0]);
   }, [currentDate]);
 
   return (<div className={classes.remainingHeight}>
     <div className={classes.leftNav}>
-      <Nav userDetails={DATA} intakeDetails={data}/>
+      <Nav userDetails={userData} intakeDetails={data}/>
     </div>
     <Divider className={classes.divider}/>
     <div className={classes.rightNav}>
-      <Content intake={data} currentDate={currentDate}/>
+      <Content intake={data}/>
     </div>
   </div>);
 }

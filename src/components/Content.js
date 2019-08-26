@@ -1,15 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {makeStyles} from "@material-ui/core";
-import ListItem from "@material-ui/core/ListItem";
+import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Avatar from "@material-ui/core/Avatar";
-import ImageIcon from "@material-ui/core/SvgIcon/SvgIcon";
-import List from "@material-ui/core/List";
-import Grid from "@material-ui/core/Grid";
+import List from '@material-ui/core/List';
+import Grid from '@material-ui/core/Grid';
 import Divider from "@material-ui/core/Divider";
-import DATA from './../constants';
-import {isDateSame, roundOff} from "../utils/helperFunctions";
-import moment from "moment";
+import { roundOff} from "../utils/helperFunctions";
 
 const useStyles = makeStyles(theme => ({
   nullPlaceholder: {
@@ -50,7 +46,7 @@ const CustomizedListItem = ({classes, data}) => <ListItem>
           <p className={classes.mutedText}>{data.serving_unit} ({roundOff(data.serving_weight_grams)}g)</p>
         </Grid>
         <Grid className="right-align" xs={2}>
-          <p className={classes.headerText}>{roundOff(data.nf_calories)}</p>
+          <p className={classes.headerText}>{roundOff(data.nf_calories)} cal</p>
           <p className={classes.mutedText}>{data.meal_type}</p>
         </Grid>
       </Grid>
@@ -59,7 +55,7 @@ const CustomizedListItem = ({classes, data}) => <ListItem>
   </Grid>
 </ListItem>;
 
-const Content = ({intake, currentDate}) => {
+const Content = ({intake}) => {
   const classes = useStyles();
 
   return (<div>

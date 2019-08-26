@@ -1,9 +1,8 @@
 import React from 'react';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ListItem from '@material-ui/core/ListItem';
-import Divider from "@material-ui/core/Divider";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Grid from "@material-ui/core/Grid";
+import Grid from '@material-ui/core/Grid';
 
 
 const useStyle = makeStyles(theme => ({

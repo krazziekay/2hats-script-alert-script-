@@ -86,7 +86,6 @@ const Nav = ({userDetails, intakeDetails}) => {
 
   useEffect(() => {
     setIntake(intakeDetails);
-    console.log(intakeDetails);
   }, [intakeDetails]);
 
   return (<div className={classes.wrapper}>

@@ -1,11 +1,7 @@
-import moment from "moment";
+import moment from 'moment';
 
 export const roundOff = (num) => {
-  return Math.round(parseInt(num));
-};
-
-export const calculateIntake = (intake) => {
-  return 0;
+  return num ? Math.round(parseInt(num)) : 0;
 };
 
 export const isDateSame = (date1, date2) => {

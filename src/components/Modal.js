@@ -1,17 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
 import Clear from '@material-ui/icons/Clear';
-import Divider from "@material-ui/core/Divider";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import {roundOff} from "../utils/helperFunctions";
+import Divider from '@material-ui/core/Divider';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import {isDateSame, roundOff} from "../utils/helperFunctions";
 
 const useStyles = makeStyles(theme => ({
   modalWrapper: {
@@ -75,22 +72,59 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const Modal = ({selectedFood, refetch, closeModal}) => {
+const Modal = ({userData, selectedFood, refetch, currentDate, closeModal}) => {
   const classes = useStyles();
   const [foodItem, setFoodItem] = useState(selectedFood);
 
+  /**
+   * Handles the changes in form input and calculates the total calories
+   * @param e
+   */
   const handleChange = (e) => {
     e.persist();
     setFoodItem(food => {
       let clone = {...food};
       clone[e.target.name] = e.target.value;
+      if (e.target.name === 'serving_qty') {
+        clone.nf_calories = roundOff(parseFloat(food.unit_calories) * parseFloat(e.target.value));
+      }
       return clone;
     });
   };
 
+  /**
+   * Add a new food item
+   */
   const addNewItem = () => {
-    console.log("Add", foodItem);
-    refetch();
+    let cloneUserData = {...userData};
+    cloneUserData.data_points.map(intake => {
+      if (isDateSame(intake.date, currentDate)) {
+        intake.intake_list.push(
+          {
+            "food_name": foodItem.food_name,
+            "serving_qty": foodItem.serving_qty,
+            "serving_unit": foodItem.serving_unit,
+            "serving_weight_grams": foodItem.serving_weight_grams,
+            "nf_calories": foodItem.nf_calories,
+            "serving_size": foodItem.serving_size,
+            "meal_type": foodItem.meal_type,
+            "thumb": foodItem.photo.thumb
+          });
+      } else {
+        intake[intake.date] = [].concat(
+          {
+            "food_name": foodItem.food_name,
+            "serving_qty": foodItem.serving_qty,
+            "serving_unit": foodItem.serving_unit,
+            "serving_weight_grams": foodItem.serving_weight_grams,
+            "nf_calories": foodItem.nf_calories,
+            "serving_size": foodItem.serving_size,
+            "meal_type": foodItem.meal_type,
+            "thumb": foodItem.photo.thumb
+          });
+      }
+    });
+    refetch(cloneUserData);
   };
 
 
@@ -109,7 +143,7 @@ const Modal = ({selectedFood, refetch, closeModal}) => {
             <TextField
               type="number"
               label="Servings"
-              name="serving_size"
+              name="serving_qty"
               className={classes.servingSize}
               value={foodItem.serving_qty}
               onChange={handleChange}
@@ -134,10 +168,10 @@ const Modal = ({selectedFood, refetch, closeModal}) => {
               <Select
                 color="primary"
                 name="meal_type"
-                value={foodItem.meal_type}
+                value={foodItem.meal_type ? foodItem.meal_type : 'breakfast'}
                 onChange={handleChange}
               >
-                <MenuItem value={'breakfast'} selected>Breakfast</MenuItem>
+                <MenuItem value={'breakfast'}>Breakfast</MenuItem>
                 <MenuItem value={'lunch'}>Lunch</MenuItem>
                 <MenuItem value={'dinner'}>Dinner</MenuItem>
                 <MenuItem value={'snack'}>Snack</MenuItem>
