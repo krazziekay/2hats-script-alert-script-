@@ -6,9 +6,6 @@ import Search from '@material-ui/icons/Search';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import ImageIcon from '@material-ui/icons/Image';
 import LeftArrow from '@material-ui/icons/ChevronLeft';
 import RightArrow from '@material-ui/icons/ChevronRight';
 import Paper from '@material-ui/core/Paper';
@@ -19,7 +16,11 @@ import Typography from '@material-ui/core/Typography';
 import AddBtn from './AddBtn';
 import Modal from './Modal';
 import DATA from './../constants';
-import {RoundedDivs} from "../utils/common";
+import {RoundedDivs, FoodList} from "../utils/common";
+import Request from './../services';
+import Divider from "@material-ui/core/Divider";
+import moment from "moment";
+import {isDateSame} from "../utils/helperFunctions";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -79,6 +80,8 @@ const useStyles = makeStyles(theme => ({
     top: 48,
     backgroundColor: '#fff',
     border: '1px solid #ddd',
+    maxHeight: '80vh',
+    overflowY: 'scroll'
   },
   dayPicker: {
     marginTop: 12,
@@ -109,13 +112,18 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('xs')]: {
       color: '#6100ee'
     },
-  }
+  },
+  mutedText: {
+    fontSize: 12,
+    paddingLeft: 12,
+    color: '#afafaf'
+  },
 }));
 
 
-const Header = ({}) => {
+const Header = ({changeDate, currentDate}) => {
   const classes = useStyles();
-  const [search, setSearch] = useState('');
+  const [loader, setLoader] = useState(false);
   const [selectedFood, setSelectedFood] = useState('');
   const [modal, setModal] = useState(false);
   const [searchList, setSearchList] = useState({display: false, list: []});
@@ -142,12 +150,20 @@ const Header = ({}) => {
    */
   const handleChange = (e) => {
     e.persist();
-    setSearchList(current => {
-      let clone = {...current};
-      clone.display = true;
-      clone.list = [{id: 1, name: e.target.value}];
-      return clone;
+    setLoader(true);
+    Request(`search/instant?query=${e.target.value}`).then(response => {
+      setSearchList(current => {
+        let clone = {...current};
+        clone.display = true;
+        clone.list = response.data;
+        return clone;
+      });
+    }).catch(error => {
+      console.log('Error', error);
+    }).finally(() => {
+      setLoader(false);
     });
+
 
   };
 
@@ -176,9 +192,13 @@ const Header = ({}) => {
    * Function to open the modal to add a new item
    * @param food
    */
-  const addFoodItem = (food = DATA.data_points[1].intake_list[0]) => {
-    setSelectedFood(food);
-    toggleModal(true);
+  const addFoodItem = (food) => {
+    Request('natural/nutrients', 'POST', {query: food.food_name}).then(response => {
+      setSelectedFood(response.data.foods[0]);
+      toggleModal(true);
+    }).catch(error => {
+      console.log('Error', error);
+    });
   };
 
   return (
@@ -188,7 +208,10 @@ const Header = ({}) => {
         <>
           <Fade clearFade={clearFade}/>
           {
-            modal && <Modal selectedFood={selectedFood} refetch={fetch} closeModal={toggleModal}/>
+            modal &&
+            <>
+              <Modal selectedFood={selectedFood} refetch={fetch} closeModal={toggleModal}/>
+            </>
           }
         </>
       }
@@ -208,14 +231,19 @@ const Header = ({}) => {
           {
             searchList.display &&
             <List className={classes.list}>
-              <ListItem button onClick={() => addFoodItem()}>
-                <ListItemAvatar>
-                  <Avatar>
-                    <ImageIcon/>
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary="Photos" secondary="Jan 9, 2014"/>
-              </ListItem>
+              {loader ? <ListItem><ListItemText primary="Loading"/></ListItem> :
+                <>
+                  <span className={classes.mutedText}>COMMON</span>
+                  {searchList.list.common && <FoodList data={searchList.list.common} clickHandler={addFoodItem}/>}
+                  <Divider/>
+                  {searchList.list.branded &&
+                  <>
+                    <span className={classes.mutedText}>BRANDED</span>
+                    <FoodList data={searchList.list.branded} clickHandler={addFoodItem}/>
+                  </>
+                  }
+                </>
+              }
             </List>
           }
         </Paper>
@@ -236,9 +264,13 @@ const Header = ({}) => {
         </div>
 
         <div className={classes.dayPicker}>
-          <IconButton className={classes.todayIcon}><LeftArrow/></IconButton>
-          <Typography variant="h5">Today</Typography>
-          <IconButton className={classes.todayIcon}><RightArrow/></IconButton>
+          <IconButton className={classes.todayIcon}
+                      onClick={() => changeDate(moment(currentDate).subtract(1, 'day').format('YYYY-MM-DD'))}><LeftArrow/></IconButton>
+          <Typography variant="h5">
+            {isDateSame(currentDate, moment()) ? 'Today' : moment(currentDate).format('D MMM, YY')}
+          </Typography>
+          <IconButton className={classes.todayIcon}
+                      onClick={() => changeDate(moment(currentDate).add(1, 'day').format('YYYY-MM-DD'))}><RightArrow/></IconButton>
         </div>
       </Toolbar>
 

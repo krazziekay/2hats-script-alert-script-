@@ -1,8 +1,11 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Nav from './Nav';
 import Content from './Content';
 import {makeStyles} from '@material-ui/core/styles';
 import Divider from "@material-ui/core/Divider";
+import DATA from "../constants";
+import {isDateSame} from "../utils/helperFunctions";
+import moment from "moment";
 
 const useStyles = makeStyles(theme => ({
   remainingHeight: {
@@ -32,6 +35,7 @@ const useStyles = makeStyles(theme => ({
     width: '70%',
     float: 'left',
     height: '100%',
+    overflowY: 'scroll',
     [theme.breakpoints.down('xs')]: {
       height: 'unset',
       width: '100%',
@@ -39,16 +43,21 @@ const useStyles = makeStyles(theme => ({
     },
   }
 }));
-const Body = () => {
+const Body = ({currentDate}) => {
+  const [data, setData] = useState(DATA.data_points.filter(d => isDateSame(d.date, moment(currentDate)))[0]);
   const classes = useStyles();
+
+  useEffect(() => {
+    setData(DATA.data_points.filter(d => isDateSame(d.date, moment(currentDate)))[0]);
+  }, [currentDate]);
 
   return (<div className={classes.remainingHeight}>
     <div className={classes.leftNav}>
-      <Nav/>
+      <Nav userDetails={DATA} intakeDetails={data}/>
     </div>
     <Divider className={classes.divider}/>
     <div className={classes.rightNav}>
-      <Content/>
+      <Content intake={data} currentDate={currentDate}/>
     </div>
   </div>);
 }

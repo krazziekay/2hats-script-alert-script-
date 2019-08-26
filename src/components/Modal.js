@@ -11,6 +11,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import {roundOff} from "../utils/helperFunctions";
 
 const useStyles = makeStyles(theme => ({
   modalWrapper: {
@@ -18,23 +19,30 @@ const useStyles = makeStyles(theme => ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    zIndex: 6,
+    zIndex: 10,
+    border: '1px solid #ddd',
     background: '#fff',
     padding: 12,
     minWidth: 300,
   },
   img: {
     height: 86,
-    width: 86
+    width: 86,
+    objectFit: 'contain'
   },
   modalHeader: {
     position: 'relative',
-    marginBottom: 12
+    marginBottom: 12,
+    color: '#000'
   },
   modalBody: {
     margin: '12px 0',
     display: 'flex',
     justifyContent: 'space-between'
+  },
+  mutedText: {
+    fontSize: 12,
+    color: '#afafaf'
   },
   modalFooter: {
     margin: '12px 0'
@@ -61,7 +69,9 @@ const useStyles = makeStyles(theme => ({
   formInput: {
     width: '100%',
   },
-
+  capitalize: {
+    textTransform: 'capitalize'
+  }
 }));
 
 
@@ -83,14 +93,15 @@ const Modal = ({selectedFood, refetch, closeModal}) => {
     refetch();
   };
 
+
   return (
     <>
       {
         foodItem &&
         <div className={classes.modalWrapper}>
           <div className={classes.modalHeader}>
-            <img src={foodItem.thumb} className={classes.img} alt="Item"/> <br/>
-            <span>Cheese</span>
+            <img src={foodItem.photo.thumb} className={classes.img} alt="food"/> <br/>
+            <span className={classes.capitalize}>{foodItem.food_name}</span>
             <Clear color="primary" className={classes.crossIcon} onClick={() => closeModal(false)}/>
           </div>
           <Divider/>
@@ -100,7 +111,7 @@ const Modal = ({selectedFood, refetch, closeModal}) => {
               label="Servings"
               name="serving_size"
               className={classes.servingSize}
-              value={foodItem.serving_size}
+              value={foodItem.serving_qty}
               onChange={handleChange}
               helperText={foodItem.serving_unit}
               InputLabelProps={{
@@ -108,11 +119,11 @@ const Modal = ({selectedFood, refetch, closeModal}) => {
               }}
             />
             <div>
-              <span className={classes.headerText}>{foodItem.serving_weight_grams}</span><br/>
-              <span className={classes.mutedText}>calories</span>
+              <span className={classes.headerText}>{roundOff(foodItem.serving_weight_grams)}</span><br/>
+              <span className={classes.mutedText}>grams</span>
             </div>
             <div>
-              <span className={classes.headerText}>{foodItem.nf_calories}</span><br/>
+              <span className={classes.headerText}>{roundOff(foodItem.nf_calories)}</span><br/>
               <span className={classes.mutedText}>calories</span>
             </div>
           </div>
@@ -126,7 +137,7 @@ const Modal = ({selectedFood, refetch, closeModal}) => {
                 value={foodItem.meal_type}
                 onChange={handleChange}
               >
-                <MenuItem value={'breakfast'}>Breakfast</MenuItem>
+                <MenuItem value={'breakfast'} selected>Breakfast</MenuItem>
                 <MenuItem value={'lunch'}>Lunch</MenuItem>
                 <MenuItem value={'dinner'}>Dinner</MenuItem>
                 <MenuItem value={'snack'}>Snack</MenuItem>

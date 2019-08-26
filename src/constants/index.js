@@ -1,4 +1,7 @@
+import moment from 'moment';
+
 const DIET = {
+  pp: 'http://sophrolib.net/wp-content/uploads/2018/04/graphicstock-default-placeholder-avatar-profile-on-gray-background-woman_HhBgJGH9-_thumb.jpg',
   first_name: 'Jane',
   last_name: 'Appleseed',
   height_cm: 163,
@@ -7,13 +10,13 @@ const DIET = {
   data_points: [
     {
       //today's date
-      date: '',
+      date: moment().format('YYYY-MM-DD'),
       //empty, let user do the input
       intake_list: []
     },
     {
       //yesterday's date
-      date: '',
+      date: moment().subtract(1, 'day').format('YYYY-MM-DD'),
       intake_list: [
         {
           //branded food has nix_item_id, common food doesn't
@@ -76,7 +79,7 @@ const DIET = {
     },
     {
       //2 days ago
-      date: '',
+      date: moment().subtract(2, 'day').format('YYYY-MM-DD'),
       intake_list: [
         {
           "food_name": "fried eggs",
