@@ -9,6 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import {isDateSame, roundOff} from "../utils/helperFunctions";
+import Fade from '../utils/Fade';
 
 const useStyles = makeStyles(theme => ({
   modalWrapper: {
@@ -130,6 +131,7 @@ const Modal = ({userData, selectedFood, refetch, currentDate, closeModal}) => {
 
   return (
     <>
+      <Fade zIndex={9}/>
       {
         foodItem &&
         <div className={classes.modalWrapper}>
