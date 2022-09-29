@@ -1,5 +1,5 @@
 
-## Installing
+## Installingss
 
 Simply clone this repo, and go to the project directory and firstly run `npm install`
 
